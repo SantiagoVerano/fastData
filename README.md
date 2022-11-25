@@ -1,2 +1,2 @@
 # fastData
-repositorio del crecimiendo de fastpData
+repositorio del crecimiendo de fastData
