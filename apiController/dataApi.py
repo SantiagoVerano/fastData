@@ -38,8 +38,10 @@ def update(data:shipping):
             list.append(data)
             status=True
             break
-    
-    return{"Response ":"updated data"}
+    if status==True:
+        return{"Response ":"updated data"}
+    else:
+        return{"Response ":"data not found"}
 
 @app.delete("/deleteShipping")
 def delete(cedula:int):
