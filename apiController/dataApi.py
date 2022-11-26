@@ -1,9 +1,15 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
+from models import shipping_db
+from mongoengine import connect
+
+import json
+
+connect(db="fastData_data_base", host="localhost", port=27017)
 
 app = FastAPI()
 
-list=[]
+#list=[]
 
 class shipping(BaseModel):
     origen:str
@@ -22,12 +28,33 @@ class shipping(BaseModel):
 
 @app.get("/viewShipping")
 def view():
-    return list
+
+    shippingInfo = shipping_db.objects.to_json()
+    return json.loads(shippingInfo)
+    
 
 @app.post("/addShipping")
-def save(data:shipping):
-    list.append(data)
-    return{"Response ":"Saved data"}
+def saving(data:shipping):
+    temporary=shipping_db()
+    temporary.origen=data.origen
+    temporary.cedula=data.cedula
+    temporary.nombres=data.nombres
+    temporary.apellidos=data.apellidos
+    temporary.telefono=data.telefono
+    temporary.destino=data.destino
+    temporary.cedulaDestino=data.cedulaDestino
+    temporary.nombresDestino=data.nombresDestino
+    temporary.apellidosDestino=data.apellidosDestino
+    temporary.telefonoDestino=data.telefonoDestino
+    temporary.direccion=data.direccion
+    temporary.indicaciones=data.indicaciones
+    temporary.estado=data.estado
+    temporary.save()
+    
+    shippingInfo = shipping_db.objects().to_json()
+    print(temporary.save,temporary.to_json(),temporary.cedula,temporary.apellidosDestino,data.origen)
+    return json.loads(shippingInfo)
+
 
 @app.put("/updateShipping")
 def update(data:shipping):
@@ -54,4 +81,4 @@ def delete(cedula:int):
     if status==True:
         return{"Response ":"Deleated data"}
     else:
-        return{"Response ":"data not found"}
+        return{"Response ":"Data not found"}
