@@ -52,7 +52,6 @@ def saving(data:shipping):
     temporary.save()
     
     shippingInfo = shipping_db.objects().to_json()
-    print(temporary.save,temporary.to_json(),temporary.cedula,temporary.apellidosDestino,data.origen)
     return json.loads(shippingInfo)
 
 
