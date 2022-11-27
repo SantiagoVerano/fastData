@@ -1,6 +1,7 @@
 from mongoengine import Document,StringField,IntField
 
 class shipping_db(Document):
+    guia=IntField()
     origen=StringField()
     cedula=IntField()
     nombres=StringField()

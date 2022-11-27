@@ -3,6 +3,9 @@ from pydantic import BaseModel
 from models import shipping_db
 from mongoengine import connect
 
+from datetime import date
+from datetime import datetime
+
 import json
 
 connect(db="fastData_data_base", host="localhost", port=27017)
@@ -12,6 +15,7 @@ app = FastAPI()
 #list=[]
 
 class shipping(BaseModel):
+    guia:int
     origen:str
     cedula:int
     nombres:str
@@ -29,13 +33,21 @@ class shipping(BaseModel):
 @app.get("/viewShipping")
 def view():
 
+    """today = date.today()
+    print(int(now.strftime("%Y%m%d%H%M%S")))
+    print(today)
+    print (now)"""
     shippingInfo = shipping_db.objects.to_json()
     return json.loads(shippingInfo)
+    
     
 
 @app.post("/addShipping")
 def saving(data:shipping):
+    
+    now = datetime.now()
     temporary=shipping_db()
+    temporary.guia=data.guia=int(now.strftime("%Y%m%d%H%M%S"))
     temporary.origen=data.origen
     temporary.cedula=data.cedula
     temporary.nombres=data.nombres
@@ -57,7 +69,10 @@ def saving(data:shipping):
 
 @app.put("/updateShipping")
 def update(data:shipping):
-    status=False
+
+    shipping_db.objects(guia=data.guia).update_one(estado=data.estado)
+
+    """status=False
     for item in list:
         if item.cedula == data.cedula:
             list.remove(item)
@@ -67,7 +82,7 @@ def update(data:shipping):
     if status==True:
         return{"Response ":"updated data"}
     else:
-        return{"Response ":"data not found"}
+        return{"Response ":"data not found"}"""
 
 @app.delete("/deleteShipping")
 def delete(cedula:int):
