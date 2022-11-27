@@ -85,8 +85,11 @@ def update(data:shipping):
         return{"Response ":"data not found"}"""
 
 @app.delete("/deleteShipping")
-def delete(cedula:int):
-    status=False
+def delete(guia:int):
+    shipping_db.objects(guia=guia).delete()
+    return {"Mensaje": "Eliminado"}
+
+    """status=False
     for item in list:
         if item.cedula == cedula:
             list.remove(item)
@@ -95,4 +98,4 @@ def delete(cedula:int):
     if status==True:
         return{"Response ":"Deleated data"}
     else:
-        return{"Response ":"Data not found"}
+        return{"Response ":"Data not found"}"""
