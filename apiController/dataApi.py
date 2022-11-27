@@ -70,7 +70,7 @@ def saving(data:shipping):
 @app.put("/updateShipping")
 def update(data:shipping):
 
-    shipping_db.objects(guia=data.guia).update_one(estado=data.estado)
+    shipping_db.objects(guia=data.guia).update_one(telefono=data.telefono, telefonoDestino=data.telefonoDestino, direccion=data.direccion, indicaciones=data.indicaciones, estado=data.estado)
 
     """status=False
     for item in list:
