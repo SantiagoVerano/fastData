@@ -16,6 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from web.views import viewShipping,addShipping,updateShipping,deleteShipping
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('view/',viewShipping),
+    path('add/',addShipping),
+    path('update/',updateShipping),
+    path('delete/',deleteShipping)
 ]

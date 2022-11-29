@@ -1,12 +1,354 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es-CO">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Información</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
 </head>
 <body>
-    
+    <!--Cuadro de muesntra de información-->
+    <div class="container mt-1">
+        <div class="col-12 d-flex">
+            <div class="col-6 text-wrap">
+                <h1>Información de envío</h1>
+            </div>  
+            <div class="col-6">
+                <button type="button" onclick="guardar()" data-bs-toggle="modal" data-bs-target="#registroModal" class="btn btn-primary float-end mt-2"><i class="bi bi-database-add"></i> Agregar Envío</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                {% for item in datos  %}
+                <table class="table table-bordered border-warning">
+                    <thead class="table-dark text-center ">
+                        <tr>
+                            <th colspan="2" class="col-5">Datos Origen</th>
+                            <th colspan="2" class="col-5">Datos Destino</th>
+                            <th class="col-2">Acciones</th>
+                        </tr>
+                        
+                    </thead>
+                    <tbody>
+                            <tr>
+                                <td colspan="2"><h5>Guia</h5></td>
+                                <td colspan="2"><h5>{{item.guia}}</h5></td>
+                                <td rowspan="9">
+                                    <div class="d-flex t-20">
+                                        <button type="button" onclick="actualizar('{{item.guia}}','{{item.origen}}','{{item.cedula}}','{{item.nombres}}','{{item.apellidos}}','{{item.telefono}}','{{item.direccion}}','{{item.indicaciones}}','{{item.destino}}','{{item.cedulaDestino}}','{{item.nombresDestino}}','{{item.apellidosDestino}}','{{item.telefonoDestino}}','{{item.direccionDestino}}','{{item.indicacionesDestino}}','{{item.estado}}')" data-bs-toggle="modal" data-bs-target="#registroModal" class="btn btn-secondary"><i class="bi bi-arrow-clockwise"></i>Actualizar</button>
+                                        <button type="button" onclick="ir_eliminar(this)" data-item="{{item.guia}}" class="btn btn-danger mx-1"><i class="bi bi-trash"></i>Eliminar</button>
+                                    </div>
+                                </td> 
+                            </tr>
+                            <tr>
+                                <td colspan="2"><h5>Estado</h5></td>
+                                <td colspan="2"><h5>{{item.estado}}</h5></td>
+                            </tr>
+                            <tr>
+                                <td><h5>Origen</h5></td>
+                                <td>{{item.origen}}</td>
+                                <td><h5>Destino</h5></td>
+                                <td>{{item.destino}}</td>
+                            </tr>
+                            <tr>
+                                <td><h5>Cedula</h5></td>
+                                <td>{{item.cedula}}</td>
+                                <td><h5>Cedula</h5></td>
+                                <td>{{item.cedulaDestino}}</td>
+                            </tr>
+                            <tr>
+                                <td><h5>Nombre</h5></td>
+                                <td>{{item.nombres}}</td>
+                                <td><h5>Nombre</h5></td>
+                                <td>{{item.nombresDestino}}</td>
+                            </tr>
+                            <tr>
+                                <td><h5>Apellido</h5></td>
+                                <td>{{item.apellidos}}</td>
+                                <td><h5>Apellido</h5></td>
+                                <td>{{item.apellidosDestino}}</td>         
+                            </tr>
+                            <tr>
+                                <td><h5>Numero</h5></td>
+                                <td>{{item.telefono}}</td>
+                                <td><h5>Numero</h5></td>
+                                <td>{{item.telefonoDestino}}</td>         
+                            </tr>
+                            <tr>
+                                <td><h5>Direccion</h5></td>
+                                <td>{{item.direccion}}</td>                
+                                <td><h5>Direccion</h5></td>
+                                <td>{{item.direccionDestino}}</td>   
+                            </tr>
+                            <tr>
+                                <td><h5>Indicaciones</h5></td>
+                                <td>{{item.indicaciones}}</td>
+                                <td><h5>Indicaciones</h5></td>
+                                <td>{{item.indicacionesDestino}}</td>
+                                       
+                            </tr>
+                            
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="registroModal" tabindex="-1" aria-labelledby="registroModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form action="#" method="post" onsubmit="return guardado()">
+                    {% csrf_token %}
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="registroModalLabel">Registro De Envío</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="mb-3">
+                                        <label for="guia" class="form-label">Guia</label>
+                                        <input type="number" class="form-control" id="guia" name="guia" required>
+                                    </div>
+                                </div>
+                                <h3>Datos Remitente</h3>
+                                <div class="col-6">
+                                    <div class="mb-3">
+                                        <label for="origen" class="form-label">Origen</label>
+                                        <input type="text" class="form-control" id="origen" name="origen" required>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="mb-3">
+                                        <label for="cedula" class="form-label">Cedula</label>
+                                        <input type="number" class="form-control" id="cedula" name="cedula" required>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="mb-3">
+                                        <label for="nombres" class="form-label">Nombres</label>
+                                        <input type="text" class="form-control" id="nombres" name="nombres" required>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="mb-3">
+                                        <label for="apellidos" class="form-label">Apellidos</label>
+                                        <input type="text" class="form-control" id="apellidos" name="apellidos" required>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="mb-3">
+                                        <label for="telefono" class="form-label">Telefono</label>
+                                        <input type="number" class="form-control" id="telefono" name="telefono" required>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="mb-3">
+                                        <label for="direccion" class="form-label">Direccion</label>
+                                        <input type="text" class="form-control" id="direccion" name="direccion" required>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="mb-3">
+                                        <label for="indicaciones" class="form-label">Indicaciones</label>
+                                        <input type="text" class="form-control" id="indicaciones" name="indicaciones" required>
+                                    </div>
+                                </div>
+                                </br>
+                                <h3>Datos Destino</h3>
+                                </br>
+                                <div class="col-6">
+                                    <div class="mb-3">
+                                        <label for="destino" class="form-label">Destino</label>
+                                        <input type="text" class="form-control" id="destino" name="destino" required>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="mb-3">
+                                        <label for="cedulaDestino" class="form-label">Cedula Destinatario</label>
+                                        <input type="number" class="form-control" id="cedulaDestino" name="cedulaDestino" required>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="mb-3">
+                                        <label for="nombresDestino" class="form-label">Nombres Destinatario</label>
+                                        <input type="text" class="form-control" id="nombresDestino" name="nombresDestino" required>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="mb-3">
+                                        <label for="apellidosDestino" class="form-label">Apellidos Destinatario</label>
+                                        <input type="text" class="form-control" id="apellidosDestino" name="apellidosDestino" required>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="mb-3">
+                                        <label for="telefonoDestino" class="form-label">Telefono Destinatario</label>
+                                        <input type="number" class="form-control" id="telefonoDestino" name="telefonoDestino" required>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="mb-3">
+                                        <label for="direccionDestino" class="form-label">Direccion Destinatario</label>
+                                        <input type="text" class="form-control" id="direccionDestino" name="direccionDestino" required>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="mb-3">
+                                        <label for="indicacionesDestino" class="form-label">Indicaciones Destinatario</label>
+                                        <input type="text" class="form-control" id="indicacionesDestino" name="indicacionesDestino" required>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="mb-3">
+                                        <label for="estado" class="form-label">Estado</label>
+                                        <input type="text" class="form-control" id="estado" name="estado" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                       
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="bi bi-x-circle"></i> Cancelar</button>
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script>
+        var accion="";
+        function guardado(){
+            if(accion=="INSERTAR"){
+                $.ajax({
+                    method: "GET",
+                    url: "/add/",
+                    data: {guia: $("#guia").val(), origen: $("#origen").val(), cedula: $("#cedula").val(), nombres: $("#nombres").val(), apellidos: $("#apellidos").val(), telefono: $("#telefono").val(), direccion: $("#direccion").val(), indicaciones: $("#indicaciones").val(), destino: $("#destino").val(), cedulaDestino: $("#cedulaDestino").val(), nombresDestino: $("#nombresDestino").val(), apellidosDestino: $("#apellidosDestino").val(), telefonoDestino: $("#telefonoDestino").val(), direccionDestino: $("#direccionDestino").val(), indicacionesDestino: $("#indicacionesDestino").val(), estado: $("#estado").val()}
+                })
+
+                .done(function(msg){
+                    if(msg=="OK"){
+                        window.location.reload()
+                    }else{
+                        alert("Error de registro")
+                    }
+
+                })
+            }
+
+            else{
+                $.ajax({
+                    method: "GET",
+                    url: "/update/",
+                    data: {guia: $("#guia").val(), origen: $("#origen").val(), cedula: $("#cedula").val(), nombres: $("#nombres").val(), apellidos: $("#apellidos").val(), telefono: $("#telefono").val(), direccion: $("#direccion").val(), indicaciones: $("#indicaciones").val(), destino: $("#destino").val(), cedulaDestino: $("#cedulaDestino").val(), nombresDestino: $("#nombresDestino").val(), apellidosDestino: $("#apellidosDestino").val(), telefonoDestino: $("#telefonoDestino").val(), direccionDestino: $("#direccionDestino").val(), indicacionesDestino: $("#indicacionesDestino").val(), estado: $("#estado").val()}
+                })
+
+                .done(function(msg){
+                    if(msg=="OK"){
+                        window.location.reload()
+                    }else{
+                        alert("Error de registro")
+                    }
+
+                })
+            }
+        }
+
+        function ir_eliminar(objeto){
+            let guia = (objeto.dataset.item)
+            
+            $.ajax({
+                method: "GET",
+                url: "/delete/",
+                data: {guia}
+            })
+
+            .done(function(msg){
+                if(msg=="OK"){
+                    window.location.reload()
+                }else{
+                    alert("Error de registro")
+                }
+
+            })
+            
+        }
+
+        function actualizar(guia,destino,cedula,nombres,apellidos,telefono,direccion,indicaciones,origen,cedulaDestino,nombresDestino,apellidosDestino,telefonoDestino,direccionDestino,indicacionesDestino,estado){
+            accion="ACTUALIZAR"
+            $("#registroModalLabel").text("Actualizacion De Envío")
+            $("#guia").attr('disabled','disabled')
+            $("#origen").attr('disabled','disabled')
+            $("#cedula").attr('disabled','disabled')
+            $("#nombres").attr('disabled','disabled')
+            $("#apellidos").attr('disabled','disabled')
+            $("#direccion").attr('disabled','disabled')
+            $("#destino").attr('disabled','disabled')
+            $("#cedulaDestino").attr('disabled','disabled')
+            $("#nombresDestino").attr('disabled','disabled')
+            $("#apellidosDestino").attr('disabled','disabled')
+            $("#direccionDestino").attr('disabled','disabled')
+            
+            
+            $("#guia").val(guia)
+            $("#origen").val(origen)
+            $("#cedula").val(cedula)
+            $("#nombres").val(nombres)
+            $("#apellidos").val(apellidos)
+            $("#telefono").val(telefono)
+            $("#direccion").val(direccion)
+            $("#indicaciones").val(indicaciones)
+            $("#destino").val(destino)
+            $("#cedulaDestino").val(cedulaDestino)
+            $("#nombresDestino").val(nombresDestino)
+            $("#apellidosDestino").val(apellidosDestino)
+            $("#telefonoDestino").val(telefonoDestino)
+            $("#direccionDestino").val(direccionDestino)
+            $("#indicacionesDestino").val(indicacionesDestino)
+            $("#estado").val(estado)
+        }
+
+        function guardar(){
+            accion="INSERTAR"
+            $("#registroModalLabel").text("Registro De Envío")
+            $("#guia").attr('disabled','disabled')
+            $("#origen").removeAttr('disabled')
+            $("#cedula").removeAttr('disabled')
+            $("#nombres").removeAttr('disabled')
+            $("#apellidos").removeAttr('disabled')
+            $("#direccion").removeAttr('disabled')
+            $("#destino").removeAttr('disabled')
+            $("#cedulaDestino").removeAttr('disabled')
+            $("#nombresDestino").removeAttr('disabled')
+            $("#apellidosDestino").removeAttr('disabled')
+            $("#direccionDestino").removeAttr('disabled')
+
+            $("#guia").val(Number)
+            $("#origen").val("")
+            $("#cedula").val(Number)
+            $("#nombres").val("")
+            $("#apellidos").val("")
+            $("#telefono").val(Number)
+            $("#direccion").val("")
+            $("#indicaciones").val("")
+            $("#destino").val("")
+            $("#cedulaDestino").val(Number)
+            $("#nombresDestino").val("")
+            $("#apellidosDestino").val("")
+            $("#telefonoDestino").val(Number)
+            $("#direccionDestino").val("")
+            $("#indicacionesDestino").val("")
+            $("#estado").val("")
+        }
+
+    </script>    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
 </html>

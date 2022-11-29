@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from models import shipping_db
 from mongoengine import connect
 
-from datetime import date
+#from datetime import date
 from datetime import datetime
 
 import json
@@ -21,22 +21,20 @@ class shipping(BaseModel):
     nombres:str
     apellidos:str
     telefono:int
+    direccion:str
+    indicaciones:str
     destino:str
     cedulaDestino:int
     nombresDestino:str
     apellidosDestino:str
     telefonoDestino:int
-    direccion:str
-    indicaciones:str
+    direccionDestino:str
+    indicacionesDestino:str
     estado:str
 
 @app.get("/viewShipping")
 def view():
 
-    """today = date.today()
-    print(int(now.strftime("%Y%m%d%H%M%S")))
-    print(today)
-    print (now)"""
     shippingInfo = shipping_db.objects.to_json()
     return json.loads(shippingInfo)
     
@@ -44,23 +42,25 @@ def view():
 
 @app.post("/addShipping")
 def saving(data:shipping):
-    
+
     now = datetime.now()
     temporary=shipping_db()
     temporary.guia=data.guia=int(now.strftime("%Y%m%d%H%M%S"))
-    temporary.origen=data.origen
+    temporary.origen=data.origen.upper()
     temporary.cedula=data.cedula
-    temporary.nombres=data.nombres
-    temporary.apellidos=data.apellidos
+    temporary.nombres=data.nombres.upper()
+    temporary.apellidos=data.apellidos.upper()
     temporary.telefono=data.telefono
-    temporary.destino=data.destino
+    temporary.direccion=data.direccion.upper()
+    temporary.indicaciones=data.indicaciones.upper()
+    temporary.destino=data.destino.upper()
     temporary.cedulaDestino=data.cedulaDestino
-    temporary.nombresDestino=data.nombresDestino
-    temporary.apellidosDestino=data.apellidosDestino
+    temporary.nombresDestino=data.nombresDestino.upper()
+    temporary.apellidosDestino=data.apellidosDestino.upper()
     temporary.telefonoDestino=data.telefonoDestino
-    temporary.direccion=data.direccion
-    temporary.indicaciones=data.indicaciones
-    temporary.estado=data.estado
+    temporary.direccionDestino=data.direccionDestino.upper()
+    temporary.indicacionesDestino=data.indicacionesDestino.upper()
+    temporary.estado=data.estado.upper()
     temporary.save()
     
     shippingInfo = shipping_db.objects().to_json()
@@ -70,32 +70,10 @@ def saving(data:shipping):
 @app.put("/updateShipping")
 def update(data:shipping):
 
-    shipping_db.objects(guia=data.guia).update_one(telefono=data.telefono, telefonoDestino=data.telefonoDestino, direccion=data.direccion, indicaciones=data.indicaciones, estado=data.estado)
+    shipping_db.objects(guia=data.guia).update_one(telefono=data.telefono, telefonoDestino=data.telefonoDestino, direccion=data.direccion.upper(), direccionDestino=data.direccionDestino.upper(), indicaciones=data.indicaciones.upper(), indicacionesDestino=data.indicacionesDestino.upper(), estado=data.estado.upper())
 
-    """status=False
-    for item in list:
-        if item.cedula == data.cedula:
-            list.remove(item)
-            list.append(data)
-            status=True
-            break
-    if status==True:
-        return{"Response ":"updated data"}
-    else:
-        return{"Response ":"data not found"}"""
 
 @app.delete("/deleteShipping")
 def delete(guia:int):
     shipping_db.objects(guia=guia).delete()
     return {"Mensaje": "Eliminado"}
-
-    """status=False
-    for item in list:
-        if item.cedula == cedula:
-            list.remove(item)
-            status=True
-            break
-    if status==True:
-        return{"Response ":"Deleated data"}
-    else:
-        return{"Response ":"Data not found"}"""
